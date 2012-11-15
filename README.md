@@ -26,7 +26,7 @@ You can:
 The following example shows how to transform a fixed length file into an associative array.
 The working example can be found in `example/parsing.php`.
 
-  $parser = new \Fanatique\Parser\FixedLengthFileParser();
+    $parser = new \Fanatique\Parser\FixedLengthFileParser();
 
     //Set the chopping map (aka where to extract the fields)
     $parser->setChoppingMap(array(
@@ -57,7 +57,7 @@ The closure needs to return a boolean value with:
 - `false`: line needs not to be parsed
 - `true`: parse line 
 
-This example ignores any line which md5 sum is f23f81318ef24f1ba4df4781d79b7849:
+This example ignores any line which md5 sum is `f23f81318ef24f1ba4df4781d79b7849`:
 
     $linesToIgnore = array('f23f81318ef24f1ba4df4781d79b7849');
     $parser->setPreflightCheck(function($currentLineStr) use($linesToIgnore) {
@@ -65,8 +65,8 @@ This example ignores any line which md5 sum is f23f81318ef24f1ba4df4781d79b7849:
                   //Ignore line
                   $ret = false;
               } else {
-                  //Parse linexyx
-                  $ret = true;### Registering a callback ###
+                  //Parse line
+                  $ret = true;
               }
               return $ret;
           }
