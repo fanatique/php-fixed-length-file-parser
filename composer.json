@@ -1,0 +1,22 @@
+{
+	"name": "fanatique/php-fixed-length-file-parser",
+    "description": "A parser class for handling fixed length text files in PHP",
+    "keywords": ["php", "text", "parser", "fixed length"],
+    "homepage": "https://github.com/fanatique/php-fixed-length-file-parser",
+    "authors": [
+        {
+            "name": "Alexander Thomas",
+            "email": "me@alexander-thomas.net",
+            "homepage": "http://alexander-thomas.net"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "DTO": "library/"
+        }
+    },
+	"version": "dev-master",
+    "require": {
+		"php": ">=5.3.0"
+    }
+}
