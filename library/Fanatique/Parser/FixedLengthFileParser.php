@@ -173,21 +173,21 @@ class FixedLengthFileParser implements ParserInterface
     private function parseLine($buffer)
     {
         $currentLine = array();
-		$lastPosition = 0;
-		$mapEntryCount = count($this->choppingMap);
+        $lastPosition = 0;
+        $mapEntryCount = count($this->choppingMap);
 
         //Extract each field from the current line
         for ($i = 0; $i < $mapEntryCount; $i++) {
 
-			// if start option was set, use it. otherwise use last known position
-			if(isset($this->choppingMap[$i]['start'])) {
-				$start = $this->choppingMap[$i]['start'];
-			} else {
-				$start = $lastPosition;
-			}
+            // if start option was set, use it. otherwise use last known position
+            if(isset($this->choppingMap[$i]['start'])) {
+                $start = $this->choppingMap[$i]['start'];
+            } else {
+                $start = $lastPosition;
+            }
 
-			// last entry of map, reset position
-			$lastPosition = $i === $mapEntryCount-1 ? 0 : $lastPosition = $start + $this->choppingMap[$i]['length'];
+            // last entry of map, reset position
+            $lastPosition = $i === $mapEntryCount-1 ? 0 : $lastPosition = $start + $this->choppingMap[$i]['length'];
 
             $name = $this->choppingMap[$i]['field_name'];
             $currentLine[$name] = substr($buffer,
