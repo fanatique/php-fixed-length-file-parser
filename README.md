@@ -34,7 +34,9 @@ The working example can be found in `example/parsing.php`.
       array('field_name' => 'name', 'start' => 2, 'length' => 5),
       array('field_name' => 'team', 'start' => 7, 'length' => 5),
     ));
-    
+
+``field_name`` and ``length`` are required and ``start`` is an optional parameter. If ``start`` is omitted, it will be set to the ``start`` plus ``length`` value of the previous map entry.
+
     //Set the absolute path to the file
     $parser->setFilePath(__DIR__ . '/example.dat');
     
