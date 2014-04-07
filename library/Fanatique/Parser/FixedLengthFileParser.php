@@ -180,11 +180,7 @@ class FixedLengthFileParser implements ParserInterface
         for ($i = 0; $i < $mapEntryCount; $i++) {
 
             // if start option was set, use it. otherwise use last known position
-            if(isset($this->choppingMap[$i]['start'])) {
-                $start = $this->choppingMap[$i]['start'];
-            } else {
-                $start = $lastPosition;
-            }
+            $start = isset($this->choppingMap[$i]['start']) ? $this->choppingMap[$i]['start'] : $lastPosition;
 
             // last entry of map, reset position
             $lastPosition = $i === $mapEntryCount-1 ? 0 : $lastPosition = $start + $this->choppingMap[$i]['length'];
