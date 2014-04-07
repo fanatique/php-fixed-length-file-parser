@@ -19,9 +19,9 @@ $parser = new \Fanatique\Parser\FixedLengthFileParser();
 //## 1. Preparing the parser
 //Set the chopping map (aka where to extract the fields)
 $parser->setChoppingMap(array(
-    array('field_name' => 'id', 'start' => 0, 'length' => 2),
-    array('field_name' => 'name', 'start' => 2, 'length' => 5),
-    array('field_name' => 'team', 'start' => 7, 'length' => 5),
+    array('field_name' => 'id', 'length' => 2),
+    array('field_name' => 'name', 'start'=>2, 'length' => 5),
+    array('field_name' => 'team', 'length' => 5), // start is the sum of name:start(2) plus name:length(5) = 7
 ));
 
 //Set the absolute path to the file
