@@ -3,6 +3,7 @@
     "description": "A parser class for handling fixed length text files in PHP",
     "keywords": ["php", "text", "parser", "fixed length"],
     "homepage": "https://github.com/fanatique/php-fixed-length-file-parser",
+	"license": "MIT",
     "authors": [
         {
             "name": "Alexander Thomas",
