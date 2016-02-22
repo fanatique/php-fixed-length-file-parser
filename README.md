@@ -18,7 +18,7 @@ You can:
 
 - register a pre flight check to determine whether or not a row has to be parsed
 - register a callback to handle each line
-- register a chopping map which transforms each row into an assiciative array
+- register a chopping map which transforms each row into an associative array
 
 
 ## Usage ##
@@ -30,12 +30,16 @@ The working example can be found in `example/parsing.php`.
 
     //Set the chopping map (aka where to extract the fields)
     $parser->setChoppingMap(array(
-      array('field_name' => 'id', 'start' => 0, 'length' => 2),
+      array('field_name' => 'id', 'field_type' => 'int', 'start' => 0, 'length' => 2),
       array('field_name' => 'name', 'start' => 2, 'length' => 5),
       array('field_name' => 'team', 'start' => 7, 'length' => 5),
     ));
 
-``field_name`` and ``length`` are required and ``start`` is an optional parameter. If ``start`` is omitted, it will be set to the ``start`` plus ``length`` value of the previous map entry.
+``field_name`` and ``length`` are required; ``start`` and ``field_type`` are optional parameters.
+If ``start`` is omitted, it will be set to the ``start`` plus ``length`` value of the previous map entry.
+
+``field_type`` can currently be one of three values: `string`, `int` or `float`.
+`string` is the default, and nothing extra is done. Otherwise, the specified value is casted to `(int)` or `(float)` respectively.
 
     //Set the absolute path to the file
     $parser->setFilePath(__DIR__ . '/example.dat');
