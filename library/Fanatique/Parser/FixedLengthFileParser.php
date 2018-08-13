@@ -54,6 +54,9 @@ class FixedLengthFileParser implements ParserInterface
      */
     protected $content = array();
 
+    /** @var int $linesToSkip Amount of lines to skip */
+    protected $linesToSkip = 0;
+
     /**
      * Expects an array with n arrays containing :
      * 'field_name', 'start', 'length'
@@ -124,6 +127,17 @@ class FixedLengthFileParser implements ParserInterface
     }
 
     /**
+     * Sets a certain amount of lines to skip at the top of the file
+     *
+     * @param int $lines Amount of lines to skip
+     * @return void
+     **/
+    public function setLinesToSkip(int $lines = 0)
+    {
+        $this->linesToSkip = $lines;
+    }
+
+    /**
      * Main method for parsing.
      *
      * @return void
@@ -147,6 +161,14 @@ class FixedLengthFileParser implements ParserInterface
         //Parse file line by line
         $this->content = array();
         $filePointer = fopen($this->file, "r");
+
+        // skip as many lines as setted
+        $i = 0;
+        while ($i < $this->linesToSkip && !feof($filePointer)) {
+            fgets($filePointer, 4096);
+            $i++;
+        }
+
         while (!feof($filePointer)) {
             $buffer = fgets($filePointer, 4096);
 
