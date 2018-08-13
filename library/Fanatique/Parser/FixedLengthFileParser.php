@@ -161,6 +161,14 @@ class FixedLengthFileParser implements ParserInterface
         //Parse file line by line
         $this->content = array();
         $filePointer = fopen($this->file, "r");
+
+        // skip as many lines as setted
+        $i = 0;
+        while ($i < $this->linesToSkip && !feof($filePointer)) {
+            fgets($filePointer, 4096);
+            $i++;
+        }
+
         while (!feof($filePointer)) {
             $buffer = fgets($filePointer, 4096);
 
