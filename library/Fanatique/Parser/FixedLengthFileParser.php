@@ -54,6 +54,9 @@ class FixedLengthFileParser implements ParserInterface
      */
     protected $content = array();
 
+    /** @var int $linesToSkip Amount of lines to skip */
+    protected $linesToSkip = 0;
+
     /**
      * Expects an array with n arrays containing :
      * 'field_name', 'start', 'length'
@@ -121,6 +124,17 @@ class FixedLengthFileParser implements ParserInterface
     public function getContent()
     {
         return $this->content;
+    }
+
+    /**
+     * Sets a certain amount of lines to skip at the top of the file
+     *
+     * @param int $lines Amount of lines to skip
+     * @return void
+     **/
+    public function setLinesToSkip(int $lines = 0)
+    {
+        $this->linesToSkip = $lines;
     }
 
     /**
