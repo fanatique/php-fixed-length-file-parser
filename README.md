@@ -19,6 +19,7 @@ You can:
 - register a pre flight check to determine whether or not a row has to be parsed
 - register a callback to handle each line
 - register a chopping map which transforms each row into an assiciative array
+- register a number of lines to skip at the top of the file
 
 
 ## Usage ##
@@ -76,7 +77,7 @@ This example ignores any line which md5 sum is `f23f81318ef24f1ba4df4781d79b7849
 
 ### Registering a callback ###
 
-Finally you can register a callback which is applied to each parsed line and allows you to process it.
+You can register a callback which is applied to each parsed line and allows you to process it.
 The closure gets the parsed line as an array and it is expected to return an array of the same format.
 
     $parser->setCallback(function(array $currentLine) {
@@ -84,3 +85,27 @@ The closure gets the parsed line as an array and it is expected to return an arr
                 return $currentLine;
             }
     );
+
+### Registering lines to skip ###
+
+Finally you, can register a certain number of lines to skip from the top of the parsed file. Just in case 
+the first lines introduce non-interesting information, like titles for the data or headers. Of course, you must do this before parsing.
+
+    $parser->setLinesToSkip(2);
+    $parser->parse();
+
+For a file like this:
+
+```
+Name                           Score
+______________________________ _____
+Jules                              8
+Fer                               10
+Albert                             5
+...
+```
+
+To unset the skips:
+
+    $parser->setLinesToSkip(0);
+    
