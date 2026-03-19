@@ -293,4 +293,30 @@ final class FixedLengthFileParserTest extends TestCase
             $this->assertSame([], $row);
         }
     }
+    public function testParseWithFieldAlignment(): void
+    {
+        $map = [
+            ['field_name' => 'left_aligned', 'length' => 10, 'align' => 'left'],
+            ['field_name' => 'right_aligned', 'length' => 10, 'align' => 'right'],
+            ['field_name' => 'default_align', 'length' => 10],
+        ];
+
+        $parser = new FixedLengthFileParser();
+        $parser->setChoppingMap($map);
+        
+        $tempFile = sys_get_temp_dir() . '/alignment_test.dat';
+        file_put_contents($tempFile, "   abc       123       xyz    \n");
+        
+        $parser->setFilePath($tempFile);
+        $parser->parse();
+        
+        $content = $parser->getContent();
+        
+        $this->assertCount(1, $content);
+        $this->assertSame('   abc', $content[0]['left_aligned']); // left removes right padding
+        $this->assertSame('123    ', $content[0]['right_aligned']); // right removes left padding
+        $this->assertSame('xyz', $content[0]['default_align']); // default removes both padding
+        
+        unlink($tempFile);
+    }
 }

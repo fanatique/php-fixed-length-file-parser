@@ -25,7 +25,7 @@ class FixedLengthFileParser implements ParserInterface
      * Arrays describing field_name, start, and length for each value
      * encoded in a line of the file to be parsed.
      *
-     * @var array<int, array{field_name: string, start?: int, length: int}>
+     * @var array<int, array{field_name: string, start?: int, length: int, align?: 'left'|'right'|'both'}>
      */
     protected array $choppingMap = [];
 
@@ -66,9 +66,10 @@ class FixedLengthFileParser implements ParserInterface
      *
      * Each entry must contain 'field_name' and 'length'. The 'start' key is
      * optional — if omitted, it is calculated from the previous entry's
-     * start + length.
+     * start + length. The 'align' key is optional and can be 'left', 'right',
+     * or 'both' (default is 'both').
      *
-     * @param array<int, array{field_name: string, start?: int, length: int}> $map
+     * @param array<int, array{field_name: string, start?: int, length: int, align?: 'left'|'right'|'both'}> $map
      */
     public function setChoppingMap(array $map): void
     {
@@ -167,9 +168,15 @@ class FixedLengthFileParser implements ParserInterface
                 : $start + $this->choppingMap[$i]['length'];
 
             $name = $this->choppingMap[$i]['field_name'];
-            $currentLine[$name] = trim(
-                substr($buffer, $start, $this->choppingMap[$i]['length'])
-            );
+            $rawValue = substr($buffer, $start, $this->choppingMap[$i]['length']);
+
+            $align = $this->choppingMap[$i]['align'] ?? 'both';
+
+            $currentLine[$name] = match ($align) {
+                'left' => rtrim($rawValue),
+                'right' => ltrim($rawValue),
+                default => trim($rawValue),
+            };
         }
 
         // Apply callback if registered

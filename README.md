@@ -45,7 +45,7 @@ $parser = new \Fanatique\Parser\FixedLengthFileParser();
 // Set the chopping map (aka where to extract the fields)
 $parser->setChoppingMap([
     ['field_name' => 'id', 'start' => 0, 'length' => 2],
-    ['field_name' => 'name', 'start' => 2, 'length' => 5],
+    ['field_name' => 'name', 'start' => 2, 'length' => 5, 'align' => 'left'],
     ['field_name' => 'team', 'start' => 7, 'length' => 5],
 ]);
 
@@ -66,6 +66,7 @@ var_dump($parser->getContent());
 
 `field_name` and `length` are required. `start` is optional — if omitted, it is
 calculated from the previous entry's `start + length`.
+`align` is optional and configures which padding spaces to trim: `'left'` (removes trailing), `'right'` (removes leading), or `'both'` (the default).
 
 ### Registering a pre-flight check
 

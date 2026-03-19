@@ -21,7 +21,7 @@ $parser = new \Fanatique\Parser\FixedLengthFileParser();
 // Set the chopping map (aka where to extract the fields)
 $parser->setChoppingMap([
     ['field_name' => 'id', 'length' => 2],
-    ['field_name' => 'name', 'start' => 2, 'length' => 5],
+    ['field_name' => 'name', 'start' => 2, 'length' => 5, 'align' => 'left'],
     ['field_name' => 'team', 'length' => 5], // start is the sum of name:start(2) plus name:length(5) = 7
 ]);
 
