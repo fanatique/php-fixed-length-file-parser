@@ -1,86 +1,129 @@
-php-fixed-length-file-parser
-============================
+# php-fixed-length-file-parser
+
+[![PHP Version](https://img.shields.io/badge/php-%3E%3D8.2-8892BF.svg)](https://www.php.net/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 A parser class for handling fixed length text files in PHP.
 
 Fixed Length Files (aka poor man's CSV) are plain text files with one data set per row
-_but without any delimiter_.
+_but without any delimiter_:
 
-    01Amy  BLUES
-    02Bob  REDS 
-    ...
+```
+01Amy  BLUES
+02Bob  REDS
+```
 
-## Features ##
+## Installation
 
-This class provides a rather comfortable way to handle this type of file on PHP.
+```bash
+composer require fanatique/php-fixed-length-file-parser
+```
 
-You can:
+## Features
 
-- register a pre flight check to determine whether or not a row has to be parsed
-- register a callback to handle each line
-- register a chopping map which transforms each row into an assiciative array
+- Register a **chopping map** to define field positions and lengths
+- Register a **pre-flight check** to filter lines before parsing
+- Register a **callback** to transform each parsed line
+- Supports any `callable` (closures, invokable objects, static methods, etc.)
+- Memory-efficient line-by-line reading — safe for very large files
 
-
-## Usage ##
+## Usage
 
 The following example shows how to transform a fixed length file into an associative array.
-The working example can be found in `example/parsing.php`.
+A working example can be found in [`example/parsing.php`](example/parsing.php).
 
-    $parser = new \Fanatique\Parser\FixedLengthFileParser();
+```php
+<?php
 
-    //Set the chopping map (aka where to extract the fields)
-    $parser->setChoppingMap(array(
-      array('field_name' => 'id', 'start' => 0, 'length' => 2),
-      array('field_name' => 'name', 'start' => 2, 'length' => 5),
-      array('field_name' => 'team', 'start' => 7, 'length' => 5),
-    ));
+declare(strict_types=1);
 
-``field_name`` and ``length`` are required and ``start`` is an optional parameter. If ``start`` is omitted, it will be set to the ``start`` plus ``length`` value of the previous map entry.
+require_once __DIR__ . '/vendor/autoload.php';
 
-    //Set the absolute path to the file
-    $parser->setFilePath(__DIR__ . '/example.dat');
-    
-    //Parse the file
-    try {
-      $parser->parse();
-    } catch (\Fanatique\Parser\ParserException $e) {
-      echo 'ERROR - ' . $e->getMessage() . PHP_EOL;
-      exit(1);
+$parser = new \Fanatique\Parser\FixedLengthFileParser();
+
+// Set the chopping map (aka where to extract the fields)
+$parser->setChoppingMap([
+    ['field_name' => 'id', 'start' => 0, 'length' => 2],
+    ['field_name' => 'name', 'start' => 2, 'length' => 5],
+    ['field_name' => 'team', 'start' => 7, 'length' => 5],
+]);
+
+// Set the absolute path to the file
+$parser->setFilePath(__DIR__ . '/example.dat');
+
+// Parse the file
+try {
+    $parser->parse();
+} catch (\Fanatique\Parser\ParserException $e) {
+    echo 'ERROR - ' . $e->getMessage() . PHP_EOL;
+    exit(1);
+}
+
+// Get the content
+var_dump($parser->getContent());
+```
+
+`field_name` and `length` are required. `start` is optional — if omitted, it is
+calculated from the previous entry's `start + length`.
+
+### Registering a pre-flight check
+
+A pre-flight check can be registered to filter each row _before_ it is parsed.
+The callable receives the raw line as a string and must return a boolean:
+
+- `true` → parse the line
+- `false` → skip the line
+
+```php
+$parser->setPreflightCheck(function (string $line): bool {
+    // Skip lines starting with a comment character
+    return !str_starts_with($line, '#');
+});
+```
+
+### Registering a callback
+
+A callback is applied to each line _after_ parsing. It receives the parsed line
+as an associative array and must return an array of the same format:
+
+```php
+$parser->setCallback(function (array $line): array {
+    $line['team'] = ucwords(strtolower($line['team']));
+    return $line;
+});
+```
+
+### Using invokable objects
+
+Since the parser accepts any `callable`, you can use invokable objects for
+more complex or reusable logic:
+
+```php
+class TeamNormalizer
+{
+    public function __invoke(array $line): array
+    {
+        $line['team'] = ucwords(strtolower($line['team']));
+        return $line;
     }
-    
-    //Get the content
-    var_dump($parser->getContent());
+}
 
-### Registering a pre flight check ###
+$parser->setCallback(new TeamNormalizer());
+```
 
-A pre flight check can be registered to be applied to each row *before* it is parsed.
-The closure needs to return a boolean value with:
+## Development
 
-- `false`: line needs not to be parsed
-- `true`: parse line 
+```bash
+# Install dependencies
+composer install
 
-This example ignores any line which md5 sum is `f23f81318ef24f1ba4df4781d79b7849`:
+# Run tests
+composer test
 
-    $linesToIgnore = array('f23f81318ef24f1ba4df4781d79b7849');
-    $parser->setPreflightCheck(function($currentLineStr) use($linesToIgnore) {
-              if (in_array(md5($currentLineStr), $linesToIgnore)) {
-                  //Ignore line
-                  $ret = false;
-              } else {
-                  //Parse line
-                  $ret = true;
-              }
-              return $ret;
-          }
-    );
+# Run static analysis
+composer phpstan
+```
 
-### Registering a callback ###
+## License
 
-Finally you can register a callback which is applied to each parsed line and allows you to process it.
-The closure gets the parsed line as an array and it is expected to return an array of the same format.
-
-    $parser->setCallback(function(array $currentLine) {
-                $currentLine['team'] = ucwords(strtolower($currentLine['team']));
-                return $currentLine;
-            }
-    );
+MIT — see [LICENSE](LICENSE) for details.
