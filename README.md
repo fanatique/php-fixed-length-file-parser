@@ -1,6 +1,7 @@
 # php-fixed-length-file-parser
 
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D8.2-8892BF.svg)](https://www.php.net/)
+[![CI](https://github.com/fanatique/php-fixed-length-file-parser/actions/workflows/ci.yml/badge.svg)](https://github.com/fanatique/php-fixed-length-file-parser/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 A parser class for handling fixed length text files in PHP.
